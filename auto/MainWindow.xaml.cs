@@ -45,7 +45,11 @@ namespace auto
             {
                 Trasa.Add(ran.Next(3));
             }
-        } 
+        }
+        public void PocitaniRychlosti(int i, double s, double v, double w)
+        {
+
+        }
     }
     class MetStanice
     {
@@ -59,6 +63,9 @@ namespace auto
     }
     class RidiciStanice
     {
-        
+        int _poloha;
+        int Poloha { get { return _poloha; } set { _poloha = value; } }
+        bool Stav;
+        bool Nahrada;
     }
 }
