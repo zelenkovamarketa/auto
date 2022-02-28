@@ -46,13 +46,21 @@ namespace auto
                 Trasa.Add(ran.Next(3));
             }
         }
-        public void PocitaniRychlosti(int trasa, double srazky, double viditelnost, double vitr)
+        public void PocitaniRychlosti(double srazky, double viditelnost, double vitr)
         {
-
+            double rychlost;
+            if (Poloha == 0) rychlost = 90;
+            else if (Poloha == 1) rychlost = 30;
+            else rychlost = 50;
+            if (viditelnost > 15000) viditelnost = 15000;
+            if (vitr > 150) vitr = 150;
+            if (srazky > 10000) viditelnost = 10000;
+            _rychlost = rychlost * 1/15000 * viditelnost  * (1 - 1/150 * vitr) * (1 - 1/10000 * srazky);
         }
         public void StavSvetel(double viditelnost)
         {
-
+            if (viditelnost < 1000 || Poloha == 1) Svetla = true;
+            else Svetla = false;
         }
     }
     class MetStanice
@@ -80,10 +88,6 @@ namespace auto
             for (int j = 1; j < i; j++)
             {
                 NovaTrasa.Add(ran.Next(3));
-            }
-            if (!aktivni)
-            {
-
             }
             return null;
         }
