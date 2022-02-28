@@ -25,8 +25,9 @@ namespace auto
             InitializeComponent();
         }
     }
-    class Auto
+    public class Auto
     {
+        public delegate double pocasi(double pocasi);
         Random ran = new Random();
         List<int> Trasa = new List<int>();
         double _rychlost;
@@ -37,6 +38,7 @@ namespace auto
         bool Svetla;
         bool Aktivni;
         bool Porucha;
+        public Auto() { }
         public void GenTrasy()
         {
             Trasa.Clear();
@@ -63,8 +65,10 @@ namespace auto
             else Svetla = false;
         }
     }
-    class MetStanice
+    public class MetStanice
     {
+        Random ran = new Random();
+        event Auto.pocasi pocasiZmena;
         double _srazky;
         double _vitr;
         double _viditelnost;
@@ -72,9 +76,32 @@ namespace auto
         double Vitr { get { return _vitr; } set { _vitr = value; } }
         Double Viditelnost { get { return _viditelnost; } set { _viditelnost = value; } }
 
+        public void ZmenSrazky()
+        {
+            Srazky = ran.Next(0, 10001);
+            IfCompleted();
+        }
+        public void ZmenViditelnost()
+        {
+            Viditelnost = ran.Next(0, 15001);
+            IfCompleted();
+        }
+        public void ZmenVitr()
+        {
+            Srazky = ran.Next(0, 101);
+            IfCompleted();
+        }
+        protected virtual void IfCompleted()
+        {
+            pocasiZmena?.Invoke(Srazky);
+            pocasiZmena?.Invoke(Viditelnost);
+            pocasiZmena?.Invoke(Vitr);
+        }
+
     }
     class RidiciStanice
     {
+        List<Auto> auta = new List<Auto>();
         Random ran = new Random();
         int _poloha;
         int Poloha { get { return _poloha; } set { _poloha = value; } }
