@@ -27,6 +27,7 @@ namespace auto
     }
     public class Auto
     {
+        event RidiciStanice.porucha JePorucha;
         public delegate double pocasi(double pocasi);
         Random ran = new Random();
         List<int> Trasa = new List<int>();
@@ -47,6 +48,14 @@ namespace auto
             {
                 Trasa.Add(ran.Next(3));
             }
+        }
+        public bool JePorouchane()
+        {
+            if (true)
+            {
+                JePorucha?.Invoke(true);
+            }
+            return false;
         }
         public void PocitaniRychlosti(double srazky, double viditelnost, double vitr)
         {
@@ -101,6 +110,7 @@ namespace auto
     }
     class RidiciStanice
     {
+        public delegate bool porucha(bool porucha);
         List<Auto> auta = new List<Auto>();
         Random ran = new Random();
         int _poloha;
