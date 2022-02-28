@@ -46,7 +46,11 @@ namespace auto
                 Trasa.Add(ran.Next(3));
             }
         }
-        public void PocitaniRychlosti(int i, double s, double v, double w)
+        public void PocitaniRychlosti(int trasa, double srazky, double viditelnost, double vitr)
+        {
+
+        }
+        public void StavSvetel(double viditelnost)
         {
 
         }
@@ -63,9 +67,25 @@ namespace auto
     }
     class RidiciStanice
     {
+        Random ran = new Random();
         int _poloha;
         int Poloha { get { return _poloha; } set { _poloha = value; } }
         bool Stav;
         bool Nahrada;
+        public List<int> Servis(int poloha, bool aktivni)
+        {
+            List<int> NovaTrasa = new List<int>();
+            NovaTrasa.Add(poloha);
+            int i = ran.Next(1, 21);
+            for (int j = 1; j < i; j++)
+            {
+                NovaTrasa.Add(ran.Next(3));
+            }
+            if (!aktivni)
+            {
+
+            }
+            return null;
+        }
     }
 }
