@@ -52,29 +52,43 @@ namespace auto
             {
                 Trasa.Add(ran.Next(3));
             }
+            ZmenaPolohy();
+        }
+        private void ZmenaPolohy()
+        {
+            Poloha++;
+            if (Poloha == Trasa.Count)
+            {
+                MessageBox.Show("dojeli jste do cíle");
+                return;
+            }
+            SpocitejRychlost(1000, 120, 5000); // předělat
+            JePorouchane();
+            StavSvetel(120); // předělat
+            MessageBox.Show(ToString());
+            System.Threading.Thread.Sleep(ran.Next(4000, 8000));
+            ZmenaPolohy();
         }
         public bool JePorouchane()
         {
-            if (true)
+            
+            if (ran.Next(51) == 50)
             {
                 JePorucha?.Invoke(true);
             }
             return false;
         }
-        public void PocitaniRychlosti(double srazky, double viditelnost, double vitr)
+        public void SpocitejRychlost(double srazky, double viditelnost, double vitr)
         {
             double rychlost;
-            if (Poloha == 0) rychlost = 90;
-            else if (Poloha == 1) rychlost = 30;
+            if (Trasa[Poloha] == 0) rychlost = 90;
+            else if (Trasa[Poloha] == 1) rychlost = 30;
             else rychlost = 50;
-            if (viditelnost > 16000) viditelnost = 16000;
-            if (vitr > 150) vitr = 150;
-            if (srazky > 10000) viditelnost = 10000;
             _rychlost = rychlost * 1 / 16000 * viditelnost * (1 - 1 / 150 * vitr) * (1 - 1 / 10000 * srazky);
         }
         public void StavSvetel(double viditelnost)
         {
-            if (viditelnost < 1000 || Poloha == 1) Svetla = true;
+            if (viditelnost < 1000 || Trasa[Poloha] == 1) Svetla = true;
             else Svetla = false;
         }
         public override string ToString()
