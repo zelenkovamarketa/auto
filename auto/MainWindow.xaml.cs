@@ -31,7 +31,6 @@ namespace auto
     }
     public class Auto
     {
-        event RidiciStanice.porucha JePorucha;
         public delegate double pocasi(double pocasi);
         Random ran = new Random();
         List<int> Trasa = new List<int>();
@@ -52,9 +51,10 @@ namespace auto
             {
                 Trasa.Add(ran.Next(3));
             }
+            Poloha = -1;
             ZmenaPolohy();
         }
-        private void ZmenaPolohy()
+        private void ZmenaPolohy() // předělat
         {
             Poloha++;
             if (Poloha == Trasa.Count)
@@ -63,23 +63,24 @@ namespace auto
                 return;
             }
             
-            double d = MetStanice.Viditelnost();
-            MessageBox.Show(d.ToString());
-            SpocitejRychlost(MetStanice.Srazky(), d, MetStanice.Vitr()); // předělat
+            double viditelnost = MetStanice.Viditelnost();
+            SpocitejRychlost(MetStanice.Srazky(), viditelnost, MetStanice.Vitr()); 
             JePorouchane();
-            StavSvetel(d); // předělat
+            StavSvetel(viditelnost); 
             MessageBox.Show(ToString());
-            System.Threading.Thread.Sleep(ran.Next(4000, 8000));
+            System.Threading.Thread.Sleep(ran.Next(400, 800));
             ZmenaPolohy();
         }
-        public bool JePorouchane()
+        public void JePorouchane() // dodělat
         {
-            
-            if (ran.Next(51) == 50)
+            if (ran.Next(31) == 30)
             {
-                JePorucha?.Invoke(true);
+                Aktivni = false;
+                if (ran.Next(11) == 10)
+                    Porucha = true;
+                else Porucha = false;
             }
-            return false;
+            else Aktivni = true;
         }
         public void SpocitejRychlost(double srazky, double viditelnost, double vitr)
         {
@@ -102,10 +103,11 @@ namespace auto
                 s += item.ToString();
             }
             return $@"Stav: {(Aktivni ? "aktivní" : "neaktivní")}
+Porucha: {Porucha}
 Světla: {(Svetla ? "svítí" : "nesvítí")}
 Rychlost = {Rychlost}
 Trasa = {s}
-Poloha = {Poloha}";
+Poloha = {(TypTrasy)Trasa[Poloha]}";
         }
     }
     public class MetStanice
@@ -131,8 +133,6 @@ Poloha = {Poloha}";
     }
     static class RidiciStanice
     {
-        public delegate bool porucha(bool porucha);
-
         static Random ran = new Random();
         static List<int> Servis(int poloha, bool aktivni)
         {
