@@ -63,10 +63,10 @@ namespace auto
             if (Poloha == 0) rychlost = 90;
             else if (Poloha == 1) rychlost = 30;
             else rychlost = 50;
-            if (viditelnost > 15000) viditelnost = 15000;
+            if (viditelnost > 16000) viditelnost = 16000;
             if (vitr > 150) vitr = 150;
             if (srazky > 10000) viditelnost = 10000;
-            _rychlost = rychlost * 1/15000 * viditelnost  * (1 - 1/150 * vitr) * (1 - 1/10000 * srazky);
+            _rychlost = rychlost * 1/16000 * viditelnost  * (1 - 1/150 * vitr) * (1 - 1/10000 * srazky);
         }
         public void StavSvetel(double viditelnost)
         {
@@ -87,12 +87,16 @@ namespace auto
 
         public void ZmenSrazky()
         {
-            Srazky = ran.Next(0, 10001);
+            int i = ran.Next(0, 11001);
+            if (i < 1000) Srazky = 0;
+            else Srazky = i - 1000;
             IfCompleted();
         }
         public void ZmenViditelnost()
         {
-            Viditelnost = ran.Next(0, 15001);
+            int i = ran.Next(0, 17001);
+            if (i > 16000) Viditelnost = 16000;
+            else Viditelnost = i;
             IfCompleted();
         }
         public void ZmenVitr()
