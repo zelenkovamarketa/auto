@@ -62,9 +62,12 @@ namespace auto
                 MessageBox.Show("dojeli jste do cíle");
                 return;
             }
-            SpocitejRychlost(1000, 120, 5000); // předělat
+            
+            double d = MetStanice.Viditelnost();
+            MessageBox.Show(d.ToString());
+            SpocitejRychlost(MetStanice.Srazky(), d, MetStanice.Vitr()); // předělat
             JePorouchane();
-            StavSvetel(120); // předělat
+            StavSvetel(d); // předělat
             MessageBox.Show(ToString());
             System.Threading.Thread.Sleep(ran.Next(4000, 8000));
             ZmenaPolohy();
@@ -107,41 +110,24 @@ Poloha = {Poloha}";
     }
     public class MetStanice
     {
-        Random ran = new Random();
-        event Auto.pocasi pocasiZmena;
-        double _srazky;
-        double _vitr;
-        double _viditelnost;
-        double Srazky { get { return _srazky; } set { _srazky = value; } }
-        double Vitr { get { return _vitr; } set { _vitr = value; } }
-        Double Viditelnost { get { return _viditelnost; } set { _viditelnost = value; } }
-
-        public void ZmenSrazky()
+        static Random ran = new Random();
+        static public double Srazky()
         {
-            int i = ran.Next(0, 11001);
-            if (i < 1000) Srazky = 0;
-            else Srazky = i - 1000;
-            IfCompleted();
+            double d = ran.Next(0, 11001);
+            if (d < 1000) d = 0;
+            else  d -= 1000;
+            return d;
         }
-        public void ZmenViditelnost()
+        static public double Viditelnost()
         {
-            int i = ran.Next(0, 17001);
-            if (i > 16000) Viditelnost = 16000;
-            else Viditelnost = i;
-            IfCompleted();
+            double d = ran.Next(0, 17001);
+            if (d > 16000) d = 16000;
+            return d;
         }
-        public void ZmenVitr()
+        static public double Vitr()
         {
-            Srazky = ran.Next(0, 101);
-            IfCompleted();
+            return ran.Next(0, 101);
         }
-        protected virtual void IfCompleted()
-        {
-            pocasiZmena?.Invoke(Srazky);
-            pocasiZmena?.Invoke(Viditelnost);
-            pocasiZmena?.Invoke(Vitr);
-        }
-
     }
     static class RidiciStanice
     {
