@@ -73,6 +73,19 @@ namespace auto
             if (viditelnost < 1000 || Poloha == 1) Svetla = true;
             else Svetla = false;
         }
+        public override string ToString()
+        {
+            string s = "";
+            foreach (int item in Trasa)
+            {
+                s += item.ToString();
+            }
+            return $@"Stav: {(Aktivni?"aktivní":"neaktivní")}
+Světla: {(Svetla?"svítí":"nesvítí")}
+Rychlost = {Rychlost}
+Trasa = {s}
+Poloha = {Poloha}";
+        }
     }
     public class MetStanice
     {
