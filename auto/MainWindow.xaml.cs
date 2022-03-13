@@ -23,6 +23,10 @@ namespace auto
         public MainWindow()
         {
             InitializeComponent();
+            Auto a = new Auto();
+            a.GenTrasy();
+            tb.Text = a.ToString();
+
         }
     }
     public class Auto
@@ -66,7 +70,7 @@ namespace auto
             if (viditelnost > 16000) viditelnost = 16000;
             if (vitr > 150) vitr = 150;
             if (srazky > 10000) viditelnost = 10000;
-            _rychlost = rychlost * 1/16000 * viditelnost  * (1 - 1/150 * vitr) * (1 - 1/10000 * srazky);
+            _rychlost = rychlost * 1 / 16000 * viditelnost * (1 - 1 / 150 * vitr) * (1 - 1 / 10000 * srazky);
         }
         public void StavSvetel(double viditelnost)
         {
@@ -80,8 +84,8 @@ namespace auto
             {
                 s += item.ToString();
             }
-            return $@"Stav: {(Aktivni?"aktivní":"neaktivní")}
-Světla: {(Svetla?"svítí":"nesvítí")}
+            return $@"Stav: {(Aktivni ? "aktivní" : "neaktivní")}
+Světla: {(Svetla ? "svítí" : "nesvítí")}
 Rychlost = {Rychlost}
 Trasa = {s}
 Poloha = {Poloha}";
@@ -125,16 +129,12 @@ Poloha = {Poloha}";
         }
 
     }
-    class RidiciStanice
+    static class RidiciStanice
     {
         public delegate bool porucha(bool porucha);
-        List<Auto> auta = new List<Auto>();
-        Random ran = new Random();
-        int _poloha;
-        int Poloha { get { return _poloha; } set { _poloha = value; } }
-        bool Stav;
-        bool Nahrada;
-        public List<int> Servis(int poloha, bool aktivni)
+
+        static Random ran = new Random();
+        static List<int> Servis(int poloha, bool aktivni)
         {
             List<int> NovaTrasa = new List<int>();
             NovaTrasa.Add(poloha);
@@ -143,7 +143,7 @@ Poloha = {Poloha}";
             {
                 NovaTrasa.Add(ran.Next(3));
             }
-            return null;
+            return NovaTrasa;
         }
     }
 }

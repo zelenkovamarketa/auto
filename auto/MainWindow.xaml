@@ -11,6 +11,7 @@
             <ColumnDefinition Width="31*"/>
             <ColumnDefinition Width="167*"/>
         </Grid.ColumnDefinitions>
+        <TextBox Name="tb" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="368" Margin="52,10,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="689"/>
 
     </Grid>
 </Window>
