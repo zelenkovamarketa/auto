@@ -25,13 +25,12 @@ namespace auto
             InitializeComponent();
             Auto a = new Auto();
             a.GenTrasy();
-            tb.Text = a.ToString();
 
         }
     }
     public class Auto
     {
-        public delegate double pocasi(double pocasi);
+        public delegate double pocasi();
         Random ran = new Random();
         List<int> Trasa = new List<int>();
         double _rychlost;
@@ -63,10 +62,9 @@ namespace auto
                 return;
             }
             
-            double viditelnost = MetStanice.Viditelnost();
-            SpocitejRychlost(MetStanice.Srazky(), viditelnost, MetStanice.Vitr()); 
+            SpocitejRychlost(MetStanice.Srazky, MetStanice.Viditelnost, MetStanice.Vitr); 
             JePorouchane();
-            StavSvetel(viditelnost); 
+            StavSvetel(MetStanice.Viditelnost); 
             MessageBox.Show(ToString());
             System.Threading.Thread.Sleep(ran.Next(400, 800));
             ZmenaPolohy();
@@ -112,23 +110,23 @@ Poloha = {(TypTrasy)Trasa[Poloha]}";
     }
     public class MetStanice
     {
+        static public double Srazky { get; private set;}
+        static public double Viditelnost { get; private set; }
+        static public double Vitr { get; private set; }
         static Random ran = new Random();
-        static public double Srazky()
+        static private void ZmenSrazky()
         {
-            double d = ran.Next(0, 11001);
-            if (d < 1000) d = 0;
-            else  d -= 1000;
-            return d;
+            Srazky = ran.Next(0, 11001) - 1000;
+            if (Srazky < 0) Srazky = 0;
         }
-        static public double Viditelnost()
+        static private void ZmenViditelnost()
         {
-            double d = ran.Next(0, 17001);
-            if (d > 16000) d = 16000;
-            return d;
+            Viditelnost = ran.Next(0, 17001);
+            if (Viditelnost > 16000) Viditelnost = 16000;
         }
-        static public double Vitr()
+        static private void ZmenVitr()
         {
-            return ran.Next(0, 101);
+            Vitr = ran.Next(0, 101);
         }
     }
     static class RidiciStanice
