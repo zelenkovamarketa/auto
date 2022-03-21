@@ -4,87 +4,86 @@ using System.Windows;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace auto
 {
-    class Auto
+     enum TranslateLocation { vyrazit, normal, most, tunel};
+    public class CarErrorEventArgs : EventArgs
     {
-        public delegate double pocasi();
-        Random ran = new Random();
-        List<int> Trasa = new List<int>();
-        double _rychlost;
-        int _poloha;
-        enum TypTrasy { normal, most, tunel };
-        double Rychlost { get { return _rychlost; } set { _rychlost = value; } }
-        int Poloha { get { return _poloha; } set { _poloha = value; } }
-        bool Svetla;
-        bool Aktivni;
-        bool Porucha;
-        public Auto() { }
-        public void GenTrasy()
-        {
-            Trasa.Clear();
-            int i = ran.Next(1, 51);
-            for (int j = 0; j < i; j++)
-            {
-                Trasa.Add(ran.Next(3));
-            }
-            Poloha = -1;
-            ZmenaPolohy();
-        }
-        private void ZmenaPolohy() // předělat
-        {
-            Poloha++;
-            if (Poloha == Trasa.Count)
-            {
-                MessageBox.Show("dojeli jste do cíle");
-                return;
-            }
+        public Guid FromCar { get; set; }
+        public int Severity { get; set; }
+    }
+    public class CarSpeedArgs : EventArgs
+    {
+        public Guid FromCar { get; set; }
+        public double Speed { get; set; }
+    }
+    public delegate void CarError(CarErrorEventArgs e);
+    public delegate void CarSpeed(CarSpeedArgs e);
 
-            SpocitejRychlost(MetStanice.Srazky, MetStanice.Viditelnost, MetStanice.Vitr);
-            JePorouchane();
-            StavSvetel(MetStanice.Viditelnost);
-            MessageBox.Show(ToString());
-            System.Threading.Thread.Sleep(ran.Next(400, 800));
-            ZmenaPolohy();
-        }
-        public void JePorouchane() // dodělat
+    public class Car
+    {
+        Random rnd = new Random();
+        private List<int> trasa = new List<int>();
+        public int Poloha { get; private set; }
+        public Guid Id { get; set; }
+        public Car()
         {
-            if (ran.Next(31) == 30)
-            {
-                Aktivni = false;
-                if (ran.Next(11) == 10)
-                    Porucha = true;
-                else Porucha = false;
-            }
-            else Aktivni = true;
+            Id = Guid.NewGuid();
         }
-        public void SpocitejRychlost(double srazky, double viditelnost, double vitr)
+
+        public event CarError ErrorJustHappened;
+        public event CarSpeed CarSpeedChanged;
+        public void RouteGeneration()
         {
-            double rychlost;
-            if (Trasa[Poloha] == 0) rychlost = 90;
-            else if (Trasa[Poloha] == 1) rychlost = 30;
-            else rychlost = 50;
-            _rychlost = rychlost * 1 / 16000 * viditelnost * (1 - 1 / 150 * vitr) * (1 - 1 / 10000 * srazky);
+            Poloha = 0;
+            trasa.Clear();
+            for (int i = 0; i < rnd.Next(1,50); i++)
+                trasa.Add(rnd.Next(1,4));
         }
-        public void StavSvetel(double viditelnost)
-        {
-            if (viditelnost < 1000 || Trasa[Poloha] == 1) Svetla = true;
-            else Svetla = false;
-        }
-        public override string ToString()
+        public string GetRoute()
         {
             string s = "";
-            foreach (int item in Trasa)
-            {
+            foreach (var item in trasa)
                 s += item.ToString();
-            }
-            return $@"Stav: {(Aktivni ? "aktivní" : "neaktivní")}
-Porucha: {Porucha}
-Světla: {(Svetla ? "svítí" : "nesvítí")}
-Rychlost = {Rychlost}
-Trasa = {s}
-Poloha = {(TypTrasy)Trasa[Poloha]}";
+            return s;
+        }
+        public string GetLocation()
+        {
+            if (Poloha >= trasa.Count)
+                 return "Dojeli jste do cíle";
+            if (trasa.Count == 0)
+                return "Nebyla dána trasa";
+            return ((TranslateLocation)trasa[Poloha]).ToString();
+        }
+        public void RunInCaseOfError()
+        {
+            ErrorJustHappened(new CarErrorEventArgs { Severity = rnd.Next(0, 200), FromCar = Id });
+        }
+        public void RunInCaseOfSpeedChange()
+        {
+            Poloha++;
+            CarSpeedChanged(new CarSpeedArgs { FromCar = Id, Speed = rnd.Next(0,100) });
+        }
+        // až bude hotová diagnóza, udělej akci podle doporučení
+        public void SubscribeToService(Center center)
+        {
+            center.ServiceActions += ServicingOnAdvice;
+        }
+        public void SubsrcibeToMeteo(Meteo meteo)
+        {
+            meteo.SpeedActions += Servicing;
+        }
+        public void ServicingOnAdvice(CarRepareEventArgs e)
+        {
+            if (e.ForCar == Id)
+                Debug.WriteLine($"Car: Přijatá oprava pro auto id={e.ForCar} je {e.ServiceAction}");
+        }
+        public void Servicing(CarGetSpeedEventArgs e)
+        {
+            if (e.ForCar == Id)
+                Debug.WriteLine($"Car: Doporučená ruchlost pro auto {e.ForCar} je {e.ServiceAction}");
         }
     }
 }

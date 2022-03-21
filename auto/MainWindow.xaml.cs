@@ -20,12 +20,76 @@ namespace auto
     /// </summary>
     public partial class MainWindow : Window
     {
+        Car car1 = new Car();
+        Car car2 = new Car();
+
+        Center center = new Center();
+        Meteo meteo = new Meteo();
+
         public MainWindow()
         {
             InitializeComponent();
-            Auto a = new Auto();
-            a.GenTrasy();
 
+            car1.SubscribeToService(center);
+            car1.ErrorJustHappened += (c) =>
+            {
+                if (c.Severity > 100)
+                {
+                    btnCarError.Background = Brushes.Red;
+                }
+            };
+            car1.CarSpeedChanged += (c) =>
+            {
+                if (c.Speed > 80)
+                    btnCarSpeed.Background = Brushes.Blue;
+                else if (c.Speed > 60)
+                    btnCarSpeed.Background = Brushes.Green;
+                else if (c.Speed > 40)
+                    btnCarSpeed.Background = Brushes.Yellow;
+                else if (c.Speed > 20)
+                    btnCarSpeed.Background = Brushes.Orange;
+                else
+                    btnCarSpeed.Background = Brushes.Red;
+
+
+            };
+            car1.SubsrcibeToMeteo(meteo);
+            car2.SubscribeToService(center);
+            meteo.SubscribeToGetSpeed(car1);
+            center.SubscribeToFixCarErrors(car1);
+            center.SubscribeToFixCarErrors(car2);
+            center.ServiceActions += Center_ServiceActions;
+            meteo.SpeedActions += Meteo_SpeedActions;
         }
+
+        private void Center_ServiceActions(CarRepareEventArgs e)
+        {
+            btnCenter.Content = e.ServiceAction;
+        }
+        private void Meteo_SpeedActions(CarGetSpeedEventArgs e)
+        {
+            btnCarSpeed.Content = e.ServiceAction;
+        }
+        private void btnCarUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            car1.RunInCaseOfSpeedChange();
+            BtnCarLocation.Content = car1.GetLocation();
+            btnMeteo.Content = meteo.ToString();
+        }
+
+
+        private void btnCarError_Click(object sender, RoutedEventArgs e)
+        {
+            car1.RunInCaseOfError();
+        }
+
+        private void btnCarGen_Click(object sender, RoutedEventArgs e)
+        {
+            car1.RouteGeneration();
+            btnCarRoute.Content = car1.GetRoute();
+            BtnCarLocation.Content = car1.GetLocation();
+        }
+
     }
 }
+

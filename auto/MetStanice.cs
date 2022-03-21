@@ -4,27 +4,52 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Diagnostics;
 namespace auto
 {
-    public class MetStanice
+    public class CarGetSpeedEventArgs : EventArgs
     {
-        static public double Srazky { get; private set; }
-        static public double Viditelnost { get; private set; }
-        static public double Vitr { get; private set; }
-        static Random ran = new Random();
-        static private void ZmenSrazky()
+        public Guid ForCar { get; set; }
+        public string ServiceAction { get; set; }
+    }
+    public delegate void GetSpeed(CarGetSpeedEventArgs e);
+    public class Meteo
+    {
+        Random rnd = new Random();
+        private double OldSpeed = 0;
+        private double Wind { get; set; }
+        private double Precipitation { get; set; }
+        private double Temperature { get; set; }
+
+        public event GetSpeed SpeedActions;
+        public void SubscribeToGetSpeed(Car car)
         {
-            Srazky = ran.Next(0, 11001) - 1000;
-            if (Srazky < 0) Srazky = 0;
+            car.CarSpeedChanged += GetSpeedM;
         }
-        static private void ZmenViditelnost()
+        private double GetSpeedCoeficient()
         {
-            Viditelnost = ran.Next(0, 17001);
-            if (Viditelnost > 16000) Viditelnost = 16000;
+            Wind = rnd.NextDouble();
+            Precipitation = rnd.NextDouble();
+            Temperature = rnd.NextDouble();
+            return (Wind + Temperature + Precipitation) / 3;
         }
-        static private void ZmenVitr()
+        public void GetSpeedM(CarSpeedArgs e)
         {
-            Vitr = ran.Next(0, 101);
+            e.Speed *= GetSpeedCoeficient();
+            Debug.WriteLine($"Meteo: Přijata změna { e.Speed}");
+            if (e.Speed < OldSpeed)
+                SpeedActions(new CarGetSpeedEventArgs { ServiceAction = $"Zpomal na {e.Speed.ToString("0.00")}", ForCar = e.FromCar });
+            else
+                SpeedActions(new CarGetSpeedEventArgs { ServiceAction = $"Zrychli na {e.Speed.ToString("0.00")}", ForCar = e.FromCar });
+            OldSpeed = e.Speed;
+        }
+        public override string ToString()
+        {
+            return $@"Meteostanice
+Vítr: {Wind}
+Teplota: {Temperature}
+Srážky: {Precipitation}
+Koeficient pro rychlost: {((Wind+Temperature+Precipitation)/3).ToString("0.00")}";
         }
     }
 }

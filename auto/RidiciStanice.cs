@@ -3,22 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace auto
 {
-    class RidiciStanice
+    public class CarRepareEventArgs : EventArgs
     {
-        static Random ran = new Random();
-        static List<int> Servis(int poloha, bool aktivni)
+        public Guid ForCar { get; set; }
+        public string ServiceAction { get; set; }
+    }
+
+    public delegate void SendService(CarRepareEventArgs e);
+
+    public class Center
+    {
+        public event SendService ServiceActions;
+        public void SubscribeToFixCarErrors(Car car)
         {
-            List<int> NovaTrasa = new List<int>();
-            NovaTrasa.Add(poloha);
-            int i = ran.Next(1, 21);
-            for (int j = 1; j < i; j++)
-            {
-                NovaTrasa.Add(ran.Next(3));
-            }
-            return NovaTrasa;
+            car.ErrorJustHappened += FixError;
+        }
+
+        // když přijde informace o chybě, doruč autu opravu
+        public void FixError(CarErrorEventArgs err)
+        {
+            Debug.WriteLine($"Center: Přijata chyba { err.Severity}");
+            if (err.Severity < 100)
+                ServiceActions(new CarRepareEventArgs { ServiceAction = "Vyměň kolo", ForCar = err.FromCar });
+            else
+                ServiceActions(new CarRepareEventArgs { ServiceAction = "Odstav auto", ForCar = err.FromCar });
         }
     }
 }
