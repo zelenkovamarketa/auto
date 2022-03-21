@@ -31,28 +31,6 @@ namespace auto
             InitializeComponent();
 
             car1.SubscribeToService(center);
-            car1.ErrorJustHappened += (c) =>
-            {
-                if (c.Severity > 100)
-                {
-                    btnCarError.Background = Brushes.Red;
-                }
-            };
-            car1.CarSpeedChanged += (c) =>
-            {
-                if (c.Speed > 80)
-                    btnCarSpeed.Background = Brushes.Blue;
-                else if (c.Speed > 60)
-                    btnCarSpeed.Background = Brushes.Green;
-                else if (c.Speed > 40)
-                    btnCarSpeed.Background = Brushes.Yellow;
-                else if (c.Speed > 20)
-                    btnCarSpeed.Background = Brushes.Orange;
-                else
-                    btnCarSpeed.Background = Brushes.Red;
-
-
-            };
             car1.SubsrcibeToMeteo(meteo);
             car2.SubscribeToService(center);
             meteo.SubscribeToGetSpeed(car1);

@@ -17,7 +17,7 @@
         <Button x:Name="btnCarGen" Content="Generovat trasu" HorizontalAlignment="Left" Height="47" Margin="34,89,0,0" VerticalAlignment="Top" Width="104" Grid.ColumnSpan="2" Click="btnCarGen_Click"/>
         <Button x:Name="BtnCarLocation" Content="Poloha" HorizontalAlignment="Left" Height="47" Margin="72,89,0,0" VerticalAlignment="Top" Width="104" Grid.Column="1"/>
         <Button x:Name="btnCarSpeed" Content="Rychlost" HorizontalAlignment="Left" Height="47" Margin="34,237,0,0" VerticalAlignment="Top" Width="104" Grid.ColumnSpan="2"/>
-        <Button Content="Světla" HorizontalAlignment="Left" Height="47" Margin="72,237,0,0" VerticalAlignment="Top" Width="104" Grid.Column="1"/>
+        <Button x:Name="btnLights" Content="Světla" HorizontalAlignment="Left" Height="47" Margin="72,237,0,0" VerticalAlignment="Top" Width="104" Grid.Column="1"/>
         <Button x:Name="btnMeteo" Content="Meteo Stanice" HorizontalAlignment="Left" Height="111" Margin="192,25,0,0" VerticalAlignment="Top" Width="232" Grid.Column="1"/>
         <Button x:Name="btnCenter" Content="Řídící stanice" HorizontalAlignment="Left" Height="121" Margin="192,163,0,0" VerticalAlignment="Top" Width="232" Grid.Column="1"/>
 

@@ -37,7 +37,7 @@ namespace auto
         {
             e.Speed *= GetSpeedCoeficient();
             Debug.WriteLine($"Meteo: Přijata změna { e.Speed}");
-            if (e.Speed < OldSpeed)
+            if (e.Speed <= OldSpeed)
                 SpeedActions(new CarGetSpeedEventArgs { ServiceAction = $"Zpomal na {e.Speed.ToString("0.00")}", ForCar = e.FromCar });
             else
                 SpeedActions(new CarGetSpeedEventArgs { ServiceAction = $"Zrychli na {e.Speed.ToString("0.00")}", ForCar = e.FromCar });
