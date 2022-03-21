@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace auto
-{
+{ 
     /// <summary>
     /// Interakční logika pro MainWindow.xaml
     /// </summary>
@@ -53,6 +53,10 @@ namespace auto
             car1.RunInCaseOfSpeedChange();
             BtnCarLocation.Content = car1.GetLocation();
             btnMeteo.Content = meteo.ToString();
+            if (car1.Lights)
+                btnCarLights.Content = "Světla: zapnuté";
+            else
+                btnCarLights.Content = "Světla: vypnuté";
         }
 
 
